@@ -10,11 +10,6 @@ export default function HomePage() {
   const [userType, setUserType] = useState<"patient" | "doctor">("patient");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // In a real application, you would use `useSession` from next-auth
-  // to determine the login state and user role.
-  // const { data: session } = useSession();
-  // const isLoggedIn = !!session;
-  // const userType = session?.user?.role;
 
   if (!isLoggedIn) {
     return (
@@ -24,8 +19,8 @@ export default function HomePage() {
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-medical">
               <div className="h-8 w-8 rounded-lg bg-white"></div>
             </div>
-            <h1 className="mb-2 text-3xl font-bold text-foreground">MedCare Portal</h1>
-            <p className="text-muted-foreground">Professional healthcare management system</p>
+            <h1 className="mb-2 text-3xl font-bold text-foreground">HealthSync Portal</h1>
+            <p className="text-muted-foreground">healthcare management system</p>
           </div>
           
           <div className="space-y-6 rounded-2xl bg-card p-8 shadow-medical">
