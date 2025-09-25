@@ -1,80 +1,90 @@
+
+"use client";
+
+import useSWR from "swr";
+import { fetcher } from "~/lib/fetcher";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "~/components/ui/skeleton";
 import { Calendar, Clock, Users, FileText, Activity, Plus, User } from "lucide-react";
-
-const todaySchedule = [
-  {
-    id: 1,
-    patient: "John Smith",
-    time: "9:00 AM",
-    type: "Follow-up",
-    duration: "30 min",
-    status: "confirmed",
-    avatar: "/api/placeholder/40/40"
-  },
-  {
-    id: 2,
-    patient: "Maria Garcia",
-    time: "10:30 AM",
-    type: "New Patient",
-    duration: "60 min",
-    status: "confirmed",
-    avatar: "/api/placeholder/40/40"
-  },
-  {
-    id: 3,
-    patient: "Robert Johnson",
-    time: "2:00 PM",
-    type: "Check-up",
-    duration: "30 min",
-    status: "pending",
-    avatar: "/api/placeholder/40/40"
-  }
-];
-
-const recentPatients = [
-  {
-    id: 1,
-    name: "Alice Brown",
-    lastVisit: "2024-01-10",
-    condition: "Hypertension",
-    nextAppointment: "2024-02-15",
-    avatar: "/api/placeholder/40/40"
-  },
-  {
-    id: 2,
-    name: "David Wilson",
-    lastVisit: "2024-01-09",
-    condition: "Diabetes Type 2",
-    nextAppointment: "2024-01-25",
-    avatar: "/api/placeholder/40/40"
-  },
-  {
-    id: 3,
-    name: "Sarah Thompson",
-    lastVisit: "2024-01-08",
-    condition: "Annual Physical",
-    nextAppointment: "2025-01-08",
-    avatar: "/api/placeholder/40/40"
-  }
-];
-
-const stats = [
-  { label: "Today's Patients", value: "8", icon: Users, color: "text-medical-primary" },
-  { label: "This Week", value: "42", icon: Calendar, color: "text-medical-secondary" },
-  { label: "Pending Reviews", value: "5", icon: FileText, color: "text-warning" },
-  { label: "Active Patients", value: "156", icon: Activity, color: "text-medical-accent" }
-];
+import { format } from "date-fns";
 
 export const DoctorDashboard = () => {
+  const { data, error, isLoading } = useSWR('/api/me/dashboard', fetcher);
+
+  if (isLoading) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-4 w-48 mt-2" />
+          </div>
+          <div className="flex space-x-3">
+            <Skeleton className="h-10 w-32" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i} className="shadow-card">
+              <CardContent className="p-6">
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-8 w-1/2 mt-2" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="shadow-card">
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <Skeleton className="h-5 w-5 mr-2" />
+                <Skeleton className="h-6 w-40" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </CardContent>
+          </Card>
+          <Card className="shadow-card">
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <Skeleton className="h-5 w-5 mr-2" />
+                <Skeleton className="h-6 w-40" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Failed to load dashboard data.</div>;
+  }
+
+  const stats = [
+    { label: "Today's Patients", value: data?.stats?.totalPatientsToday, icon: Users, color: "text-medical-primary" },
+    { label: "Pending Reviews", value: data?.stats?.pendingLabResults, icon: FileText, color: "text-warning" },
+    { label: "Records to Review", value: data?.stats?.recordsToReview, icon: Activity, color: "text-medical-accent" },
+  ];
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-foreground">Good morning, Dr. Johnson</h2>
-          <p className="text-muted-foreground">You have 8 appointments today</p>
+          <p className="text-muted-foreground">You have {data?.stats?.totalPatientsToday} appointments today</p>
         </div>
         <div className="flex space-x-3">
           <Button variant="outline">
@@ -115,30 +125,30 @@ export const DoctorDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {todaySchedule.map((appointment) => (
+            {data?.todaySchedule?.map((appointment: any) => (
               <div key={appointment.id} className="flex items-center space-x-4 p-4 bg-secondary/50 rounded-lg">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={appointment.avatar} />
+                  <AvatarImage src={'/api/placeholder/40/40'} />
                   <AvatarFallback>
                     <User className="h-6 w-6" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="font-medium">{appointment.patient}</p>
+                    <p className="font-medium">{appointment.patient.user.name}</p>
                     <Badge 
-                      variant={appointment.status === "confirmed" ? "default" : "secondary"}
+                      variant={appointment.status === "SCHEDULED" ? "default" : "secondary"}
                       className="text-xs"
                     >
                       {appointment.status}
                     </Badge>
                   </div>
                   <div className="flex items-center text-sm text-muted-foreground space-x-4">
-                    <span>{appointment.time}</span>
+                    <span>{format(new Date(appointment.appointmentDate), "p")}</span>
                     <span>•</span>
-                    <span>{appointment.type}</span>
+                    <span>{appointment.reasonForVisit}</span>
                     <span>•</span>
-                    <span>{appointment.duration}</span>
+                    <span>{appointment.duration} min</span>
                   </div>
                 </div>
                 <Button variant="outline" size="sm">
@@ -161,21 +171,17 @@ export const DoctorDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {recentPatients.map((patient) => (
+            {data?.recentPatients?.map((patient: any) => (
               <div key={patient.id} className="flex items-center space-x-4 p-3 border border-border rounded-lg">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={patient.avatar} />
+                  <AvatarImage src={patient.user.image || '/api/placeholder/40/40'} />
                   <AvatarFallback>
                     <User className="h-5 w-5" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm">{patient.name}</p>
-                  <p className="text-xs text-muted-foreground">{patient.condition}</p>
-                  <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-                    <span>Last: {patient.lastVisit}</span>
-                    <span>Next: {patient.nextAppointment}</span>
-                  </div>
+                  <p className="font-medium text-sm">{patient.user.name}</p>
+                  <p className="text-xs text-muted-foreground">{patient.address}</p>
                 </div>
                 <Button variant="ghost" size="sm">
                   <FileText className="h-4 w-4" />

@@ -4,6 +4,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { signOut } from "next-auth/react";
 import { Bell, Calendar, Settings, User } from "lucide-react";
 
 interface HeaderProps {
@@ -58,18 +67,32 @@ export const Header = ({ userType, userName, notifications = 0 }: HeaderProps) =
             <Settings className="h-5 w-5" />
           </Button>
           
-          <div className="flex items-center space-x-3 pl-4 border-l border-border">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="/api/placeholder/32/32" />
-              <AvatarFallback>
-                <User className="h-4 w-4" />
-              </AvatarFallback>
-            </Avatar>
-            <div className="text-sm">
-              <p className="font-medium">{userName}</p>
-              <p className="text-muted-foreground capitalize">{userType}</p>
-            </div>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center space-x-3 pl-4 border-l border-border">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="/api/placeholder/32/32" />
+                  <AvatarFallback>
+                    <User className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-sm text-left">
+                  <p className="font-medium">{userName}</p>
+                  <p className="text-muted-foreground capitalize">{userType}</p>
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={() => signOut({ callbackUrl: '/' })}>
+                Log Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>

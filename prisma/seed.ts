@@ -1,4 +1,3 @@
-
 import { PrismaClient, UserRole, AppointmentStatus } from "@prisma/client";
 import bcrypt from "bcrypt";
 
@@ -76,8 +75,10 @@ async function main() {
   console.log("Creating patients...");
   for (let i = 0; i < patientData.length; i++) {
     const patient = patientData[i];
+    if (!patient) continue;
     const hashedPassword = await bcrypt.hash(patient.password, 10);
     const doctor = doctors[i % doctors.length];
+    if (!doctor) continue; // FIX: Ensures doctor is not undefined
 
     const newPatientUser = await prisma.user.create({
       data: {
