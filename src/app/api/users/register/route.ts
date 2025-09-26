@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "~/server/db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { UserRole } from "@prisma/client";
 
 const registerSchema = z.object({
