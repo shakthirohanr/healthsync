@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "~/server/db";
@@ -41,6 +40,8 @@ export async function POST(request: Request) {
       return new NextResponse("Patient profile not found", { status: 404 });
     }
 
+    // Corrected line: Look up the doctor's profile using the userId field,
+    // which matches the User.id sent from the frontend.
     const doctorProfile = await db.doctorProfile.findUnique({
       where: { userId: doctorId },
     });

@@ -61,13 +61,13 @@ async function main() {
       password: "password123",
     },
     {
-      name: "Lucy van Pelt",
-      email: "lucy.vanpelt@example.com",
+      name: "Emma Johnson",
+      email: "emma.johnson@example.com",
       password: "password123",
     },
     {
-      name: "Linus van Pelt",
-      email: "linus.vanpelt@example.com",
+      name: "Daniel Smith",
+      email: "daniel.smith@example.com",
       password: "password123",
     },
   ];
@@ -104,7 +104,9 @@ async function main() {
         data: {
           patientId: newPatientUser.patientProfile.id,
           doctorId: doctor.id,
-          appointmentDate: new Date(new Date().setDate(new Date().getDate() - 7)),
+          appointmentDate: new Date(
+            new Date().setDate(new Date().getDate() - 7),
+          ),
           duration: 30,
           reasonForVisit: "Annual Check-up",
           status: AppointmentStatus.COMPLETED,
@@ -116,7 +118,9 @@ async function main() {
         data: {
           patientId: newPatientUser.patientProfile.id,
           doctorId: doctor.id,
-          appointmentDate: new Date(new Date().setDate(new Date().getDate() + 14)),
+          appointmentDate: new Date(
+            new Date().setDate(new Date().getDate() + 14),
+          ),
           duration: 45,
           reasonForVisit: "Follow-up Consultation",
           status: AppointmentStatus.SCHEDULED,
