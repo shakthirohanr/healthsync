@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -8,10 +7,12 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 
-export function LoginForm() {
+export function LoginForm({ error: initialError }: { error?: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(
+    initialError ? "You must be logged in to view that page." : ""
+  );
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,7 +28,7 @@ export function LoginForm() {
     if (result?.error) {
       setError("Invalid email or password.");
     } else {
-      router.refresh();
+      router.push("/dashboard");
     }
   };
 
@@ -53,8 +54,10 @@ export function LoginForm() {
           required
         />
       </div>
-      {error && <p className="text-red-500">{error}</p>}
-      <Button type="submit">Login</Button>
+      {error && <p className="text-red-500 text-center">{error}</p>}
+      <div className="flex justify-center">
+        <Button type="submit" className="w-full">Login</Button>
+      </div>
     </form>
   );
 }

@@ -8,7 +8,7 @@ import { AppointmentStatus, UserRole } from "@prisma/client";
 const createAppointmentSchema = z.object({
   doctorId: z.string(),
   appointmentDate: z.string().transform((str) => new Date(str)),
-  duration: z.number().positive(),
+  duration: z.coerce.number().positive(),
   reasonForVisit: z.string().nonempty(),
 });
 
@@ -41,10 +41,18 @@ export async function POST(request: Request) {
       return new NextResponse("Patient profile not found", { status: 404 });
     }
 
+    const doctorProfile = await db.doctorProfile.findUnique({
+      where: { userId: doctorId },
+    });
+
+    if (!doctorProfile) {
+      return new NextResponse("Doctor profile not found for the selected doctor", { status: 404 });
+    }
+
     const newAppointment = await db.appointment.create({
       data: {
         patientId: patientProfile.id,
-        doctorId,
+        doctorId: doctorProfile.id,
         appointmentDate,
         duration,
         reasonForVisit,
