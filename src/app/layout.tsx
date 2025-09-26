@@ -6,6 +6,7 @@ import { TooltipProvider } from "~/components/ui/tooltip";
 import { Toaster as Sonner } from "~/components/ui/sonner";
 import { Toaster } from "~/components/ui/toaster";
 import { ThemeProvider } from "~/components/theme-provider"; // Import the new provider
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "HealthSync - Patient Management System",
@@ -31,6 +32,7 @@ export default function RootLayout({
             {children}
           </TooltipProvider>
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
