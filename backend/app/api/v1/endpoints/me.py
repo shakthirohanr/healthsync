@@ -66,10 +66,10 @@ async def get_patient_dashboard(user: User, db: AsyncSession):
                     "name": appt.doctor.user.name,
                     "email": appt.doctor.user.email
                 }
-            }
+            } if appt.doctor and appt.doctor.user else None
         }
         for appt in patient.appointments
-        if appt.appointmentDate >= now
+        if appt.appointmentDate >= now and appt.doctor is not None
     ]
     
     # Sort by date
@@ -91,10 +91,10 @@ async def get_patient_dashboard(user: User, db: AsyncSession):
                     "name": appt.doctor.user.name,
                     "email": appt.doctor.user.email
                 }
-            }
+            } if appt.doctor and appt.doctor.user else None
         }
         for appt in patient.appointments
-        if appt.appointmentDate < now
+        if appt.appointmentDate < now and appt.doctor is not None
     ]
     
     # Sort by date (most recent first)
@@ -119,10 +119,10 @@ async def get_patient_dashboard(user: User, db: AsyncSession):
                     "id": pres.doctor.user.id,
                     "name": pres.doctor.user.name
                 }
-            }
+            } if pres.doctor and pres.doctor.user else None
         }
         for pres in patient.prescriptions
-        if pres.endDate is None or pres.endDate >= date.today()
+        if (pres.endDate is None or pres.endDate >= date.today()) and pres.doctor is not None
     ]
     
     # Sort by created date (most recent first)
@@ -142,9 +142,10 @@ async def get_patient_dashboard(user: User, db: AsyncSession):
                     "id": appt.doctor.user.id,
                     "name": appt.doctor.user.name
                 }
-            }
+            } if appt.doctor and appt.doctor.user else None
         }
         for appt in patient.appointments
+        if appt.doctor is not None
     ]
     all_appointments_list.sort(key=lambda x: x["appointmentDate"], reverse=True)
     
@@ -195,10 +196,10 @@ async def get_doctor_dashboard(user: User, db: AsyncSession):
                     "name": appt.patient.user.name,
                     "email": appt.patient.user.email
                 }
-            }
+            } if appt.patient and appt.patient.user else None
         }
         for appt in doctor.appointments
-        if appt.appointmentDate.date() == today
+        if appt.appointmentDate.date() == today and appt.patient is not None
     ]
     
     # Sort by time
@@ -208,7 +209,7 @@ async def get_doctor_dashboard(user: User, db: AsyncSession):
     patient_ids = set()
     patients = []
     for appt in doctor.appointments:
-        if appt.patient.id not in patient_ids:
+        if appt.patient and appt.patient.user and appt.patient.id not in patient_ids:
             patient_ids.add(appt.patient.id)
             patients.append({
                 "id": appt.patient.id,
@@ -237,10 +238,10 @@ async def get_doctor_dashboard(user: User, db: AsyncSession):
                     "name": appt.patient.user.name,
                     "email": appt.patient.user.email
                 }
-            }
+            } if appt.patient and appt.patient.user else None
         }
         for appt in doctor.appointments
-        if appt.appointmentDate >= now
+        if appt.appointmentDate >= now and appt.patient is not None
     ]
     
     # Sort by date
@@ -262,9 +263,10 @@ async def get_doctor_dashboard(user: User, db: AsyncSession):
                     "name": appt.patient.user.name,
                     "email": appt.patient.user.email
                 }
-            }
+            } if appt.patient and appt.patient.user else None
         }
         for appt in doctor.appointments
+        if appt.patient is not None
     ]
     all_appointments_list.sort(key=lambda x: x["appointmentDate"], reverse=True)
     

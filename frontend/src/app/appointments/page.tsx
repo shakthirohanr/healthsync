@@ -52,7 +52,7 @@ export default function AppointmentsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header userType={userType} userName={userName} notifications={3} />
+      <Header userType={userType} userName={userName} />
       <main className="container mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>

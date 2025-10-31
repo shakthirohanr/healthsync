@@ -2,6 +2,7 @@
 "use client";
 
 import useSWR from "swr";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,11 @@ const fetcher = (url: string) =>
   fetch(`${API_URL}${url}`, { headers: getAuthHeader() })
     .then(res => res.json());
 
-export const DoctorDashboard = () => {
+interface DoctorDashboardProps {
+  userName?: string;
+}
+
+export const DoctorDashboard = ({ userName = "Doctor" }: DoctorDashboardProps) => {
   const { data, error, isLoading } = useSWR('/me/dashboard', fetcher);
 
   if (isLoading) {
@@ -80,25 +85,22 @@ export const DoctorDashboard = () => {
   const stats = [
     { label: "Today's Patients", value: data?.stats?.totalPatientsToday, icon: Users, color: "text-medical-primary" },
     { label: "Pending Reviews", value: data?.stats?.pendingLabResults, icon: FileText, color: "text-warning" },
-    { label: "Records to Review", value: data?.stats?.recordsToReview, icon: Activity, color: "text-medical-accent" },
   ];
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Good morning, Dr. Johnson</h2>
+          <h2 className="text-2xl font-bold text-foreground">Good morning, {userName}</h2>
           <p className="text-muted-foreground">You have {data?.stats?.totalPatientsToday} appointments today</p>
         </div>
         <div className="flex space-x-3">
-          <Button variant="outline">
-            <Calendar className="h-4 w-4 mr-2" />
-            View Calendar
-          </Button>
-          <Button className="bg-gradient-medical hover:opacity-90">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Patient
-          </Button>
+          <Link href="/calendar">
+            <Button variant="outline">
+              <Calendar className="h-4 w-4 mr-2" />
+              View Calendar
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -159,9 +161,11 @@ export const DoctorDashboard = () => {
                 </Button>
               </div>
             ))}
-            <Button variant="outline" className="w-full">
-              View Full Schedule
-            </Button>
+            <Link href="/appointments" className="w-full">
+              <Button variant="outline" className="w-full">
+                View Full Schedule
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 
@@ -191,39 +195,14 @@ export const DoctorDashboard = () => {
                 </Button>
               </div>
             ))}
-            <Button variant="outline" className="w-full">
-              View All Patients
-            </Button>
+            <Link href="/patients" className="w-full">
+              <Button variant="outline" className="w-full">
+                View All Patients
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
-
-      {/* Quick Actions */}
-      <Card className="shadow-card">
-        <CardHeader>
-          <CardTitle className="text-lg">Quick Actions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Button variant="outline" className="h-20 flex-col space-y-2">
-              <FileText className="h-6 w-6" />
-              <span className="text-sm">Write Prescription</span>
-            </Button>
-            <Button variant="outline" className="h-20 flex-col space-y-2">
-              <Calendar className="h-6 w-6" />
-              <span className="text-sm">Schedule Follow-up</span>
-            </Button>
-            <Button variant="outline" className="h-20 flex-col space-y-2">
-              <Activity className="h-6 w-6" />
-              <span className="text-sm">Lab Results</span>
-            </Button>
-            <Button variant="outline" className="h-20 flex-col space-y-2">
-              <Plus className="h-6 w-6" />
-              <span className="text-sm">New Patient</span>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

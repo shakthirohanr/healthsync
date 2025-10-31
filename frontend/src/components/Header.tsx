@@ -14,6 +14,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Bell, Settings, User } from "lucide-react";
 import { logout } from "~/lib/auth";
+import { NotificationPanel } from "./NotificationPanel";
 
 interface HeaderProps {
   userType: "patient" | "doctor";
@@ -34,9 +35,9 @@ export const Header = ({ userType, userName, notifications = 0 }: HeaderProps) =
 
   const doctorNavItems = [
     { label: "Dashboard", path: "/dashboard" },
+    { label: "Calendar", path: "/calendar" },
     { label: "Appointments", path: "/appointments" },
     { label: "Patients", path: "/patients" },
-    { label: "Records", path: "/records" },
   ];
 
   const navItems = userType === "patient" ? patientNavItems : doctorNavItems;
@@ -67,14 +68,7 @@ export const Header = ({ userType, userName, notifications = 0 }: HeaderProps) =
         </div>
 
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5" />
-            {notifications > 0 && (
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                {notifications}
-              </Badge>
-            )}
-          </Button>
+          <NotificationPanel userType={userType} />
           
           <Button variant="ghost" size="icon" onClick={() => router.push("/settings")}>
             <Settings className="h-5 w-5" />

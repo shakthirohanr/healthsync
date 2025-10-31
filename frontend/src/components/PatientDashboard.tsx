@@ -186,41 +186,70 @@ export const PatientDashboard = ({ userName = "User" }: PatientDashboardProps) =
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-warning/10 border border-warning/20 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-sm">Medication Reminder</p>
-                  <p className="text-xs text-muted-foreground">Take Lisinopril - 8:00 AM</p>
+            {/* Active Prescriptions Reminder */}
+            {data?.activePrescriptions && data.activePrescriptions.length > 0 && (
+              <div className="p-4 bg-warning/10 border border-warning/20 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-sm">Active Medications</p>
+                    <p className="text-xs text-muted-foreground">
+                      {data.activePrescriptions.length} prescription{data.activePrescriptions.length > 1 ? 's' : ''} active
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline">
+                    View
+                  </Button>
                 </div>
-                <Button size="sm" variant="outline">
-                  Mark Taken
-                </Button>
               </div>
-            </div>
+            )}
             
-            <div className="p-4 bg-medical-primary/10 border border-medical-primary/20 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-sm">Lab Results</p>
-                  <p className="text-xs text-muted-foreground">New results available</p>
+            {/* Upcoming Appointments Reminder */}
+            {data?.upcomingAppointments && data.upcomingAppointments.length > 0 && (
+              <div className="p-4 bg-medical-primary/10 border border-medical-primary/20 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-sm">Upcoming Appointment</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(data.upcomingAppointments[0].appointmentDate).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline">
+                    View
+                  </Button>
                 </div>
-                <Button size="sm" variant="outline">
-                  View
-                </Button>
               </div>
-            </div>
+            )}
             
-            <div className="p-4 bg-medical-accent/10 border border-medical-accent/20 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-sm">Annual Check-up</p>
-                  <p className="text-xs text-muted-foreground">Due in 2 weeks</p>
+            {/* Prescription Refills Reminder */}
+            {data?.activePrescriptions && data.activePrescriptions.some((p: any) => p.refillsAvailable !== null && p.refillsAvailable <= 2) && (
+              <div className="p-4 bg-medical-accent/10 border border-medical-accent/20 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-sm">Refill Needed</p>
+                    <p className="text-xs text-muted-foreground">
+                      {data.activePrescriptions.filter((p: any) => p.refillsAvailable !== null && p.refillsAvailable <= 2).length} prescription{data.activePrescriptions.filter((p: any) => p.refillsAvailable !== null && p.refillsAvailable <= 2).length > 1 ? 's' : ''} low on refills
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline">
+                    Request
+                  </Button>
                 </div>
-                <Button size="sm" variant="outline">
-                  Schedule
-                </Button>
               </div>
-            </div>
+            )}
+
+            {/* Empty State - No Reminders */}
+            {(!data?.activePrescriptions || data.activePrescriptions.length === 0) &&
+             (!data?.upcomingAppointments || data.upcomingAppointments.length === 0) && (
+              <div className="col-span-3 p-8 text-center text-muted-foreground">
+                <p className="text-sm">No health reminders at this time</p>
+                <p className="text-xs mt-1">You're all set! Keep up with your health routine.</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

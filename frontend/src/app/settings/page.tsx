@@ -186,7 +186,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header userType={userType} userName={userName} notifications={3} />
+      <Header userType={userType} userName={userName} />
       <main className="container mx-auto px-6 py-8 max-w-4xl">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-foreground">Settings</h1>

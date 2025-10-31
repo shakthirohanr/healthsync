@@ -46,7 +46,7 @@ export default function RecordsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header userType={userType} userName={userName} notifications={3} />
+      <Header userType={userType} userName={userName} />
       <main className="container mx-auto px-6 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-foreground">Medical Records</h1>

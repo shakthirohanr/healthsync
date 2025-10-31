@@ -73,9 +73,9 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header userType={userType} userName={userName} notifications={3} />
+      <Header userType={userType} userName={userName} />
       <main>
-        {userType === "patient" ? <PatientDashboard userName={userName} /> : <DoctorDashboard />}
+        {userType === "patient" ? <PatientDashboard userName={userName} /> : <DoctorDashboard userName={userName} />}
       </main>
     </div>
   );
